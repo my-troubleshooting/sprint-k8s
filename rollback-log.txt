@@ -1,0 +1,32 @@
+1번
+kim@kim-500R5K-501R5K-500R5Q:~/Test/sprint-k8s-rollout$ kubectl rollout history deployment
+deployment.apps/nginx-deployment 
+REVISION  CHANGE-CAUSE
+1         kubectl apply --filename=cozserver-deployment-v1.yaml --record=true
+2         kubectl apply --filename=cozserver-deployment-v2.yaml --record=true
+3         kubectl apply --filename=cozserver-deployment-v3.yaml --record=true
+2번
+kim@kim-500R5K-501R5K-500R5Q:~/Test/sprint-k8s-rollout$ kubectl rollout undo deployment/nginx-deployment
+deployment.apps/nginx-deployment rolled back
+
+3번
+kim@kim-500R5K-501R5K-500R5Q:~/Test/sprint-k8s-rollout$ kubectl get all
+NAME                                    READY   STATUS        RESTARTS   AGE
+pod/nginx-deployment-5c964f777f-9w5nd   1/1     Running       0          24s
+pod/nginx-deployment-5c964f777f-hzn5x   1/1     Running       0          25s
+pod/nginx-deployment-5c964f777f-t9wk4   1/1     Running       0          22s
+pod/nginx-deployment-67b5f559b8-2vqt2   1/1     Terminating   0          12m
+pod/nginx-deployment-67b5f559b8-8ts8g   1/1     Terminating   0          12m
+pod/nginx-deployment-67b5f559b8-srz7p   1/1     Terminating   0          12m
+
+NAME                 TYPE           CLUSTER-IP       EXTERNAL-IP      PORT(S)        AGE
+service/kubernetes   ClusterIP      10.96.0.1        <none>           443/TCP        67m
+service/nginx        LoadBalancer   10.103.207.137   10.103.207.137   80:32046/TCP   28m
+
+NAME                               READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/nginx-deployment   3/3     3            3           12m
+
+NAME                                          DESIRED   CURRENT   READY   AGE
+replicaset.apps/nginx-deployment-5c964f777f   3         3         3       12m
+replicaset.apps/nginx-deployment-5d46694cc4   0         0         0       12m
+replicaset.apps/nginx-deployment-67b5f559b8   0         0         0       12m
